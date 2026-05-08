@@ -22,6 +22,14 @@ def index():
     return redirect('/login')
 
 
+@app.route('/hello')
+def hello():
+    if 'user' not in session:
+        return "Unauthorized", 401
+    user = session['user']
+    return f"Hello, {user.get('name') or user.get('login')}!"
+
+
 @app.route('/login')
 def login():
     redirect_uri = url_for('callback', _external=True)
@@ -55,7 +63,6 @@ def profile():
                 color: #e6edf3;
                 min-height: 100vh;
             }}
-            /* Navbar */
             .navbar {{
                 background: #161b22;
                 border-bottom: 1px solid #30363d;
@@ -84,7 +91,6 @@ def profile():
                 border-radius: 50%;
                 border: 1px solid #30363d;
             }}
-            /* Layout */
             .container {{
                 max-width: 1012px;
                 margin: 32px auto;
@@ -93,7 +99,6 @@ def profile():
                 grid-template-columns: 296px 1fr;
                 gap: 24px;
             }}
-            /* Sidebar */
             .sidebar {{ display: flex; flex-direction: column; gap: 16px; }}
             .avatar-large {{
                 width: 100%;
@@ -146,7 +151,6 @@ def profile():
                 padding-top: 16px;
             }}
             .profile-meta span {{ color: #e6edf3; font-weight: 500; }}
-            /* Main content */
             .main {{ display: flex; flex-direction: column; gap: 16px; }}
             .section-title {{
                 font-size: 16px;
@@ -171,22 +175,18 @@ def profile():
             .data-row:last-child {{ border-bottom: none; }}
             .data-label {{ color: #8b949e; }}
             .data-value {{ color: #e6edf3; font-weight: 500; }}
-            .badge {{
+            .badge-green {{
                 display: inline-block;
-                background: #1f6feb;
+                background: #238636;
                 color: #e6edf3;
                 font-size: 12px;
                 font-weight: 500;
                 padding: 2px 8px;
                 border-radius: 20px;
             }}
-            .badge-green {{
-                background: #238636;
-            }}
         </style>
     </head>
     <body>
-        <!-- Navbar -->
         <nav class="navbar">
             <svg height="32" viewBox="0 0 16 16" width="32">
                 <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
@@ -201,15 +201,14 @@ def profile():
             </svg>
             <div class="navbar-links">
                 <a href="/profile">Profile</a>
+                <a href="/hello">Hello</a>
                 <a href="/api/secure-data">Secure Data</a>
                 <img class="avatar-small" src="{user.get('avatar_url')}" alt="avatar">
                 <a href="/logout" style="color:#f85149;">Sign out</a>
             </div>
         </nav>
 
-        <!-- Content -->
         <div class="container">
-            <!-- Sidebar -->
             <div class="sidebar">
                 <img class="avatar-large" src="{user.get('avatar_url')}" alt="Profile Photo">
                 <div>
@@ -218,6 +217,7 @@ def profile():
                 </div>
                 <a class="btn btn-default" href="{user.get('html_url')}" target="_blank">View GitHub Profile</a>
                 <a class="btn btn-default" href="/api/secure-data">View Secure Data</a>
+                <a class="btn btn-default" href="/hello">Say Hello</a>
                 <a class="btn btn-danger" href="/logout">Sign out</a>
                 <div class="profile-meta">
                     <div>Email: <span>{user.get('email') or 'Not public'}</span></div>
@@ -228,13 +228,12 @@ def profile():
                 </div>
             </div>
 
-            <!-- Main -->
             <div class="main">
                 <div class="card">
                     <div class="section-title">Session Info</div>
                     <div class="data-row">
                         <span class="data-label">Status</span>
-                        <span class="data-value"><span class="badge badge-green">Authenticated</span></span>
+                        <span class="data-value"><span class="badge-green">Authenticated</span></span>
                     </div>
                     <div class="data-row">
                         <span class="data-label">Username</span>
@@ -405,9 +404,6 @@ def secure_data():
                 font-size: 14px;
                 font-weight: 600;
                 border-bottom: 1px solid #30363d;
-                display: flex;
-                align-items: center;
-                gap: 8px;
             }}
             .data-row {{
                 display: flex;
@@ -457,6 +453,7 @@ def secure_data():
             </svg>
             <div class="navbar-links">
                 <a href="/profile">Profile</a>
+                <a href="/hello">Hello</a>
                 <a href="/api/secure-data">Secure Data</a>
                 <img class="avatar-small" src="{user.get('avatar_url')}" alt="avatar">
                 <a href="/logout" style="color:#f85149;">Sign out</a>
@@ -499,7 +496,7 @@ def secure_data():
                 </div>
             </div>
 
-            <a class="btn" href="/profile">← Back to Profile</a>
+            <a class="btn" href="/profile">Back to Profile</a>
         </div>
     </body>
     </html>
